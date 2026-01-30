@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mheemecal Lite - Field Optimized</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS Reset & Layout --- */
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background-color: #e8f5e9; /* พื้นหลังสีเขียวอ่อนเดิม */
+            padding: 10px; 
+            margin: 0; 
+            color: #333; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .container { 
+            max-width: 100%; 
+            margin: auto; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            position: relative; 
+        }
+        
+        /* Header */
+        h2 { 
+            text-align: center; 
+            color: #2e7d32; 
+            margin: 5px 0; 
+            font-weight: 700; 
+            font-size: 24px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        
+        .sub-header { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
+
+        /* ปุ่มเฟือง (หมุนตอนจิ้มค้าง) */
+        .settings-btn { 
+            position: absolute; top: 10px; right: 15px; 
+            font-size: 26px; /* ใหญ่ขึ้นนิดนึง */
+            cursor: pointer; 
+            color: #78909c; 
+            background: none; border: none; 
+            z-index: 10; 
+            transition: transform 0.2s;
+            padding: 5px;
+        }
+        .settings-btn:active { transform: rotate(180deg); color: #2e7d32; }
+
+        /* --- Input Layout (แก้ Pain Point: สู้แดด + จิ้มง่าย) --- */
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 700; color: #1b5e20; font-size: 16px; }
+        
+        input[type="text"], input[type="number"], select {
+            width: 100%; 
+            padding: 12px; /* เพิ่มพื้นที่สัมผัส */
+            border: 2px solid #1b5e20; /* ขอบหนา สีเข้ม สู้แดด */
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-family: 'Sarabun';
+            font-size: 16px; /* ตัวหนังสือใหญ่ขึ้น */
+            background-color: #ffffff; /* พื้นขาวล้วน */
+            color: #000000; /* ตัวหนังสือดำสนิท */
+            font-weight: 600;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4caf50;
+            background-color: #f1f8e9;
+        }
+
+        /* --- ตาราง (แก้ Pain Point: ไม่ตกขอบ) --- */
+        .item-table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0 8px; /* ระยะห่างระหว่างบรรทัด */
+            margin-top: 10px; 
+            table-layout: fixed; /* ล็อกขนาดคอลัมน์ */
+        }
+        
+        .item-table th { 
+            background: #2e7d32; 
+            color: white; 
+            padding: 10px 4px; 
+            text-align: center; 
+            font-size: 14px; 
+            font-weight: 700;
+            border-radius: 4px;
+            white-space: nowrap; /* ห้ามตัดคำ */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .item-table td { padding: 0 2px; vertical-align: top; }
+
+        /* จัดระเบียบ Input ในตาราง */
+        .item-qty, .item-price { text-align: center; }
+        
+        /* ปุ่มลบ (สีแดง) */
+        .btn-del { 
+            background-color: #e57373; 
+            padding: 0; 
+            height: 48px; /* สูงเท่ากับ Input */
+            width: 100%; 
+            border-radius: 6px; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* --- ปุ่มต่างๆ (ใหญ่ กดง่าย) --- */
+        .btn { 
+            width: 100%; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            margin-top: 15px; 
+            color: white; 
+            font-weight: 700; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-add { background-color: #43a047; }
+        .btn-save { background-color: #1565c0; margin-top: 25px; }
+        
+        /* ปุ่มล้างรายการ (แคปซูลส้ม) */
+        .btn-clear { 
+            background-color: #ffcc80; 
+            color: #e65100; 
+            border: 1px solid #ffb74d; 
+            border-radius: 50px; 
+            font-size: 14px; 
+            padding: 8px 25px; 
+            width: auto; 
+            display: block; 
+            margin: 0 auto 15px auto; 
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ยอดรวม */
+        .summary-box { 
+            background: #c8e6c9; 
+            padding: 15px; 
+            margin-top: 20px; 
+            border-radius: 8px; 
+            border: 1px solid #a5d6a7; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .grand-total { font-size: 26px; font-weight: 700; color: #1b5e20; }
+
+        .footer-credit { text-align: center; margin-top: 30px; font-size: 12px; color: #b0bec5; font-style: italic; }
+
+        /* --- Settings Box (แก้ Pain Point: แก้ไขง่าย) --- */
+        .settings-box { 
+            background: white; 
+            padding: 15px; 
+            border-radius: 10px; 
+            width: 95%; 
+            max-width: 500px; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        .cat-header { 
+            font-weight: 700; 
+            color: #1b5e20; 
+            margin-top: 15px; 
+            padding-bottom: 5px; 
+            border-bottom: 2px solid #a5d6a7; 
+            font-size: 18px; 
+        }
+        
+        .edit-row { display: flex; gap: 5px; margin-top: 8px; align-items: center; }
+        .edit-input { 
+            padding: 10px; /* ช่องใหญ่ แก้ไขง่าย */
+            font-size: 14px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            font-family: 'Sarabun'; 
+        }
+        
+        .inp-name { flex: 2; min-width: 0; }
+        .inp-price { flex: 1; min-width: 0; text-align: center; }
+        .inp-ef { flex: 1; min-width: 0; text-align: center; background-color: #f9fbe7; }
+        .btn-row-del { 
+            width: 35px; height: 38px; 
+            background: #e57373; color: white; 
+            border: none; border-radius: 4px; 
+            font-weight: bold; cursor: pointer;
+        }
+
+        /* --- Overlays & Receipt --- */
+        #settings-overlay, #receipt-overlay, #loading-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); z-index: 20000; 
+            display: none; justify-content: center; align-items: center; 
+        }
+        
+        /* แก้ Pain Point: ใบเสร็จล้นจอ */
+        #receipt-paper { 
+            width: 450px; 
+            max-width: 92vw; /* บีบให้พอดีจอเสมอ */
+            background: white; 
+            padding: 20px; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+            font-family: 'Sarabun', sans-serif; 
+            position: relative;
+        }
+
+        /* Receipt Styles */
+        .rc-header { text-align: center; border-bottom: 2px solid #2e7d32; padding-bottom: 15px; margin-bottom: 15px; position: relative; }
+        .rc-logo-text { font-size: 28px; font-weight: 700; color: #1b5e20; }
+        .rc-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .rc-table th { background: #1b5e20; color: white; padding: 8px; text-align: right; font-size: 14px; }
+        .rc-table th:first-child { text-align: left; }
+        .rc-table td { border-bottom: 1px solid #ddd; padding: 8px; font-size: 14px; text-align: right; }
+        .rc-table td:first-child { text-align: left; }
+
+        .rc-ghg-box { margin-top: 15px; padding: 10px; background-color: #e8f5e9; border: 1px solid #81c784; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .rc-tree-icon { font-size: 40px; margin-right: 10px; }
+        
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 10px;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .close-btn { position: absolute; top: 10px; right: 10px; background: #d32f2f; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button class="settings-btn" onclick="openSettings()">⚙️</button>
+
+    <h2>📱Mheemecal-Lite</h2>
+    <div class="sub-header">ระบบคำนวณราคาสำหรับรถรับซื้อมืออาชีพ</div>
+    
+    <button class="btn btn-clear" onclick="clearForm()">↺ ล้างรายการ</button>
+
+    <div class="input-group" style="margin-bottom:15px;">
+        <label>ชื่อลูกค้า:</label>
+        <input type="text" id="customerName" placeholder="ระบุชื่อลูกค้า...">
+    </div>
+
+    <table class="item-table" id="mainTable">
+        <thead>
+            <tr>
+                <th width="38%" style="text-align:left; padding-left:5px;">รายการ</th>
+                <th width="17%">นน.</th>
+                <th width="17%">ราคา</th>
+                <th width="18%">รวม</th>
+                <th width="10%"></th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <button class="btn btn-add" id="btnAddRow">+ เพิ่มรายการ</button>
+
+    <div class="summary-box">
+        <label style="display:flex; align-items:center; cursor:pointer; margin-bottom: 5px; font-weight:bold; font-size: 16px;">
+            <input type="checkbox" id="vatCheck" style="width:22px; height:22px; margin-right:10px;"> 
+            <span>คิด VAT 7%</span>
+        </label>
+        <div class="grand-total">
+            ยอดสุทธิ: <span id="showTotal">0.00</span> บาท
+        </div>
+    </div>
+
+    <button class="btn btn-save" id="btnSave">📸 สร้างและโหลดใบเสร็จทันที</button>
+    <div class="footer-credit">Developed By Mheemetung</div>
+</div>
+
+<div id="settings-overlay">
+    <div class="settings-box">
+        <div style="font-size:20px; font-weight:bold; color:#2e7d32; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
+            ⚙️ ตั้งค่ารายการ <span style="float:right; cursor:pointer; color:#999;" onclick="closeSettings()">X</span>
+        </div>
+        
+        <div style="font-size:14px; color:#555; background:#fff3cd; padding:8px; border-radius:4px; margin-bottom:10px; border:1px solid #ffeeba;">
+            💡 แตะที่ช่องชื่อ หรือ ราคา แล้วพิมพ์แก้ไขได้เลย (บันทึกอัตโนมัติ)
+        </div>
+
+        <div id="settings-content-area" style="flex-grow:1; overflow-y:auto;"></div>
+        
+        <button class="btn" style="background:#607d8b; margin-top:15px; font-size:16px;" onclick="resetFactory()">↺ คืนค่าโรงงาน</button>
+    </div>
+</div>
+
+<div id="loading-overlay"><div class="loader"></div><div style="font-weight:bold; font-size:18px;">กำลังสร้างรูปภาพ...</div></div>
+
+<div id="receipt-overlay">
+    <button style="position:fixed; top:20px; right:20px; background:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; z-index:20001; box-shadow:0 2px 5px rgba(0,0,0,0.3);" onclick="closeOverlay()">X ปิด</button>
+    
+    <div id="receipt-paper">
+        <div class="rc-header">
+            <img id="receiptLogo" src="logo.jpg" alt="" style="position:absolute; top:0; left:0; height:60px; display:none;" onerror="tryLoadImage(this)">
+            <div style="text-align:center;">
+                <div style="font-size:24px;">♻️ <span class="rc-logo-text">หมีมีถัง</span> ♻️</div>
+                <div style="font-style:italic; color:#43a047; margin:5px 0; font-size:12px;">"คุณไม่ได้ขายขยะ แต่คุณให้โอกาส"</div>
+                <div style="font-size:12px;">📞 089-7923513 | FB: หมีมีถัง</div>
+            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; color:#555;">
+            <div id="rc-customer">ลูกค้า: -</div><div id="rc-date">วันที่: -</div>
+        </div>
+        <table class="rc-table">
+            <thead><tr><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>รวมเงิน</th></tr></thead>
+            <tbody id="rc-body"></tbody>
+        </table>
+        <div style="text-align:right; margin-top:15px;">
+            <div>รวมเป็นเงิน: <span id="rc-subtotal">0.00</span></div>
+            <div id="rc-vat-row" style="display:none; font-size:12px;">VAT 7%: <span id="rc-vat">0.00</span></div>
+            <div style="font-size:24px; font-weight:bold; color:#1b5e20; border-top:2px solid #1b5e20; display:inline-block; padding-top:5px; margin-top:5px;">
+                <span id="rc-total">0.00</span> บาท
+            </div>
+        </div>
+        <div class="rc-ghg-box">
+            <div style="flex:1; text-align:right; border-right:1px solid #aaa; padding-right:10px;">
+                <div style="font-size:10px; color:#2e7d32; font-weight:bold;">ลดการปล่อยก๊าซฯ</div>
+                <div style="font-size:18px; color:#1b5e20; font-weight:bold;"><span id="rc-ghg-total">0.00</span> <span style="font-size:10px;">kgCO₂eq</span></div>
+            </div>
+            <div style="flex:1.2; display:flex; align-items:center; padding-left:10px;">
+                <div style="font-size:30px; margin-right:5px;">🌳</div>
+                <div>
+                    <div style="font-size:10px; color:#2e7d32; font-weight:bold;">เทียบเท่าปลูกต้นไม้</div>
+                    <div style="font-size:18px; color:#1b5e20; font-weight:bold;"><span id="rc-tree-total">0</span> ต้น</div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center; margin-top:15px; font-size:10px; color:#999;">-- ขอบคุณที่ร่วมรักษ์โลก --</div>
+    </div>
+</div>
+
+<script>
+    function tryLoadImage(img) {
+        const s = img.src;
+        if(s.endsWith('logo.jpg')) img.src='logo.JPG';
+        else if(s.endsWith('logo.JPG')) img.src='logo.jpeg';
+        else if(s.endsWith('logo.jpeg')) img.src='logo.png';
+        else img.style.display='none';
+    }
+
+    // --- Master Data (ข้อมูลจริง ครบถ้วน) ---
+    const DEFAULT_DB = {
+        "พลาสติก": [
+            { name: "ขวด PET ใส", price: 4.0, ef: 1.0310 },
+            { name: "ขวด PET สี", price: 0.5, ef: 1.0310 },
+            { name: "ขวด PET สกรีน", price: 0.5, ef: 1.0310 },
+            { name: "ขวดขุ่น", price: 5.0, ef: 1.0310 },
+            { name: "พลาสติกสีรวม", price: 3.0, ef: 1.0310 },
+            { name: "พลาสติกดำ", price: 2.0, ef: 1.0310 },
+            { name: "พลาสติกกรอบ", price: 1.0, ef: 1.0310 },
+            { name: "แผ่น CD", price: 4.0, ef: 1.0310 },
+            { name: "ท่อ PVC ฟ้า", price: 0.5, ef: 1.0310 },
+            { name: "ถุงพลาสติก", price: 0.5, ef: 1.0310 }
+        ],
+        "กระดาษ": [
+            { name: "กระดาษลัง", price: 1.2, ef: 5.6735 },
+            { name: "กระดาษขาวดำ", price: 3.5, ef: 5.6735 },
+            { name: "กระดาษย่อยรวม", price: 1.0, ef: 5.6735 },
+            { name: "หนังสือพิมพ์", price: 6.0, ef: 5.6735 },
+            { name: "กล่องนม", price: 1.0, ef: 4.2551 }
+        ],
+        "โลหะ": [
+            { name: "เหล็กบาง", price: 4.0, ef: 1.8320 },
+            { name: "เหล็กหนา", price: 5.0, ef: 1.8320 },
+            { name: "กระป๋องกาแฟ", price: 2.0, ef: 1.8320 },
+            { name: "กระป๋องอลูมิเนียม", price: 30.0, ef: 9.1270 },
+            { name: "ทองแดงเบอร์ A", price: 300.0, ef: 4.3910 },
+            { name: "ทองแดงเบอร์ B", price: 290.0, ef: 4.3910 },
+            { name: "ทองแดงเบอร์ 1", price: 280.0, ef: 4.3910 },
+            { name: "ทองแดงเบอร์ 4", price: 290.0, ef: 4.3910 },
+            { name: "ไส้แอร์ทองแดง", price: 120.0, ef: 4.3910 },
+            { name: "ทองเหลือง", price: 130.0, ef: 4.3910 },
+            { name: "อลูมิเนียมหนา", price: 44.0, ef: 9.1270 },
+            { name: "อลูมิเนียมบาง", price: 45.0, ef: 9.1270 },
+            { name: "อลูมิเนียมฉาก", price: 60.0, ef: 9.1270 },
+            { name: "อลูมิเนียมหม้อน้ำ", price: 27.0, ef: 9.1270 },
+            { name: "อลูมิเนียมกระทะ", price: 25.0, ef: 9.1270 },
+            { name: "สแตนเลส", price: 20.0, ef: 4.3910 },
+            { name: "ตะกั่ว", price: 30.0, ef: 4.3910 },
+            { name: "ล้อแมกซ์", price: 40.0, ef: 4.3910 }
+        ],
+        "แก้ว": [
+            { name: "ขวดแก้วขาว", price: 1.0, ef: 0.2760 },
+            { name: "ขวดแก้วแดง", price: 0.5, ef: 0.2760 },
+            { name: "ขวดแก้วเขียว", price: 1.0, ef: 0.2760 },
+            { name: "ขวดแก้วรวม", price: 0.3, ef: 0.2760 },
+            { name: "เบียร์สิงห์", price: 4.0, ef: 0.2760, isCrate: true },
+            { name: "เบียร์ลีโอ", price: 6.0, ef: 0.2760, isCrate: true },
+            { name: "เบียร์ช้าง", price: 10.0, ef: 0.2760, isCrate: true },
+            { name: "เบียร์ Hieneken", price: 10.0, ef: 0.2760, isCrate: true },
+            { name: "หงษ์ทอง", price: 10.0, ef: 0.2760, isCrate: true },
+            { name: "เหล้าขาวใหญ่", price: 6.0, ef: 0.2760, isCrate: true },
+            { name: "เหล้าขาวเล็ก", price: 15.0, ef: 0.2760, isCrate: true }
+        ],
+        "อื่นๆ": [
+            { name: "น้ำมันพืชใช้แล้ว", price: 10.0, ef: 0 },
+            { name: "TV", price: 10.0, ef: 0 },
+            { name: "จอคอม", price: 10.0, ef: 0 },
+            { name: "เครื่องซักผ้า", price: 100.0, ef: 0 },
+            { name: "ตู้เย็น", price: 150.0, ef: 0 },
+            { name: "แอร์", price: 10.0, ef: 0 },
+            { name: "ของถอด", price: 10.0, ef: 0 },
+            { name: "แบตเล็ก", price: 11.0, ef: 0 },
+            { name: "แบตใหญ่", price: 13.0, ef: 0 }
+        ]
+    };
+
+    let RECYCLE_DB = loadDB();
+    function loadDB() {
+        const s = localStorage.getItem('mheemecal_db_v1');
+        return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DB));
+    }
+    function saveDB() { localStorage.setItem('mheemecal_db_v1', JSON.stringify(RECYCLE_DB)); }
+    function resetFactory() {
+        if(confirm("ล้างค่าทั้งหมดเป็นค่าเริ่มต้น?")) {
+            localStorage.removeItem('mheemecal_db_v1');
+            location.reload();
+        }
+    }
+
+    document.getElementById('btnAddRow').addEventListener('click', addNewRow);
+    document.getElementById('vatCheck').addEventListener('change', reCalculate);
+    document.getElementById('btnSave').addEventListener('click', generateImage);
+
+    function clearForm() {
+        if(confirm("ล้างรายการ?")) {
+            document.getElementById('customerName').value = "";
+            document.getElementById('tableBody').innerHTML = "";
+            document.getElementById('vatCheck').checked = false;
+            reCalculate();
+            addNewRow();
+        }
+    }
+
+    function addNewRow() {
+        const tbody = document.getElementById('tableBody');
+        const row = document.createElement('tr');
+        
+        let gOpt = `<option value="" disabled selected>เลือกหมวด...</option>`;
+        Object.keys(RECYCLE_DB).forEach(g => gOpt += `<option value="${g}">${g}</option>`);
+
+        // สร้าง Row ใหม่ (Input ใหญ่ + ขอบเข้ม)
+        row.innerHTML = `
+            <td>
+                <select class="group-select" style="margin-bottom:5px;">${gOpt}</select>
+                <select class="item-select" disabled><option>-- รายการ --</option></select>
+            </td>
+            <td><input type="number" class="item-qty" step="0.1" placeholder="0" inputmode="decimal"></td>
+            <td><input type="number" class="item-price" step="0.1" placeholder="0" inputmode="decimal"></td>
+            <td style="text-align:right;"><div class="row-sum" style="margin-top:10px; font-weight:bold; font-size:16px;">0.00</div></td>
+            <td style="vertical-align:middle;"><button class="btn-del">X</button></td>
+        `;
+
+        const gSel = row.querySelector('.group-select');
+        const iSel = row.querySelector('.item-select');
+        const qty = row.querySelector('.item-qty');
+        const price = row.querySelector('.item-price');
+        
+        gSel.addEventListener('change', function() {
+            const items = RECYCLE_DB[this.value];
+            let iOpt = `<option value="" disabled selected>-- รายการ --</option>`;
+            items.forEach(i => iOpt += `<option value="${i.name}" data-price="${i.price}" data-ef="${i.ef}" data-iscrate="${i.isCrate||false}">${i.name}</option>`);
+            iSel.innerHTML = iOpt;
+            iSel.disabled = false;
+        });
+
+        iSel.addEventListener('change', function() {
+            price.value = this.options[this.selectedIndex].getAttribute('data-price');
+            calc(row);
+        });
+
+        [qty, price].forEach(e => e.addEventListener('input', () => calc(row)));
+        row.querySelector('.btn-del').addEventListener('click', () => { row.remove(); reCalculate(); });
+
+        tbody.appendChild(row);
+    }
+
+    function calc(row) {
+        const q = parseFloat(row.querySelector('.item-qty').value) || 0;
+        const p = parseFloat(row.querySelector('.item-price').value) || 0;
+        row.querySelector('.row-sum').innerText = (q * p).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+        reCalculate();
+    }
+
+    function reCalculate() {
+        let sum = 0;
+        document.querySelectorAll('.row-sum').forEach(e => sum += parseFloat(e.innerText.replace(/,/g,''))||0);
+        const total = document.getElementById('vatCheck').checked ? sum * 1.07 : sum;
+        document.getElementById('showTotal').innerText = total.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+
+    function generateImage() {
+        const rows = document.querySelectorAll('#tableBody tr');
+        let has = false; rows.forEach(r => { if(r.querySelector('.item-select').value) has=true; });
+        if(!has) { alert("ไม่มีรายการ"); return; }
+
+        document.getElementById('loading-overlay').style.display='flex';
+        
+        const now = new Date();
+        document.getElementById('rc-date').innerText = `วันที่: ${now.toLocaleDateString('th-TH')} ${now.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
+        document.getElementById('rc-customer').innerText = "ลูกค้า: " + (document.getElementById('customerName').value || "-");
+
+        const tbody = document.getElementById('rc-body');
+        tbody.innerHTML = "";
+        let sum = 0, ghg = 0;
+
+        rows.forEach(r => {
+            const iSel = r.querySelector('.item-select');
+            if(iSel.disabled || iSel.selectedIndex <= 0) return;
+            const name = iSel.value;
+            const q = parseFloat(r.querySelector('.item-qty').value)||0;
+            const p = parseFloat(r.querySelector('.item-price').value)||0;
+            const tot = parseFloat(r.querySelector('.row-sum').innerText.replace(/,/g,''));
+            const ef = parseFloat(iSel.options[iSel.selectedIndex].getAttribute('data-ef'))||0;
+            const isCrate = iSel.options[iSel.selectedIndex].getAttribute('data-iscrate') === 'true';
+
+            if(tot > 0) {
+                sum += tot;
+                let w = isCrate ? q * 5 : q;
+                ghg += w * ef;
+                tbody.innerHTML += `<tr><td>${name}</td><td style="text-align:right;">${q}</td><td style="text-align:right;">${p}</td><td style="text-align:right;">${tot.toLocaleString(undefined, {minimumFractionDigits:2})}</td></tr>`;
+            }
+        });
+
+        const vat = document.getElementById('vatCheck').checked;
+        const grand = vat ? sum * 1.07 : sum;
+        
+        document.getElementById('rc-subtotal').innerText = sum.toLocaleString('th-TH', {minimumFractionDigits:2});
+        document.getElementById('rc-vat-row').style.display = vat ? 'block' : 'none';
+        document.getElementById('rc-vat').innerText = (sum*0.07).toLocaleString('th-TH', {minimumFractionDigits:2});
+        document.getElementById('rc-total').innerText = grand.toLocaleString('th-TH', {minimumFractionDigits:2});
+        document.getElementById('rc-ghg-total').innerText = ghg.toLocaleString('th-TH', {minimumFractionDigits:2});
+        document.getElementById('rc-tree-total').innerText = Math.round(ghg/9.5);
+
+        document.getElementById('receipt-overlay').style.display='flex';
+
+        setTimeout(() => {
+            html2canvas(document.getElementById('receipt-paper'), { scale: 2 }).then(canvas => {
+                const a = document.createElement('a');
+                a.download = `ใบเสร็จ_${new Date().getTime()}.png`;
+                a.href = canvas.toDataURL();
+                a.click();
+                document.getElementById('loading-overlay').style.display='none';
+            });
+        }, 1000);
+    }
+
+    function closeOverlay() { document.getElementById('receipt-overlay').style.display='none'; }
+
+    // --- Settings (แก้ไข: เพิ่ม EF + แก้ไขง่าย) ---
+    function openSettings() {
+        const area = document.getElementById('settings-content-area');
+        area.innerHTML = "";
+        Object.keys(RECYCLE_DB).forEach(g => {
+            let h = `<div class="cat-header">${g}</div>
+                     <div style="display:flex; gap:5px; font-size:12px; color:#666; margin-top:5px;">
+                        <span style="flex:2;">ชื่อรายการ</span>
+                        <span style="flex:1; text-align:center;">ราคา</span>
+                        <span style="flex:1; text-align:center;">EF</span>
+                        <span style="width:35px;"></span>
+                     </div>`;
+            RECYCLE_DB[g].forEach((i, idx) => {
+                h += `<div class="edit-row">
+                        <input value="${i.name}" class="edit-input inp-name" onchange="upd('${g}',${idx},'name',this.value)">
+                        <input type="number" value="${i.price}" class="edit-input inp-price" onchange="upd('${g}',${idx},'price',this.value)">
+                        <input type="number" value="${i.ef}" class="edit-input inp-ef" step="0.0001" onchange="upd('${g}',${idx},'ef',this.value)">
+                        <button class="btn-row-del" onclick="delItem('${g}',${idx})">X</button>
+                      </div>`;
+            });
+            h += `<button onclick="addItem('${g}')" style="width:100%; background:#a5d6a7; border:none; padding:8px; margin-top:5px; border-radius:4px; cursor:pointer; font-weight:bold;">+ เพิ่มใน ${g}</button>`;
+            area.innerHTML += h;
+        });
+        document.getElementById('settings-overlay').style.display='flex';
+    }
+    function closeSettings() { document.getElementById('settings-overlay').style.display='none'; }
+    function upd(g,i,k,v) { 
+        if(k!=='name') v=parseFloat(v)||0; 
+        RECYCLE_DB[g][i][k]=v; 
+        saveDB(); 
+    }
+    function delItem(g,i) {
+        if(confirm("ลบรายการนี้?")) { RECYCLE_DB[g].splice(i,1); saveDB(); openSettings(); }
+    }
+    function addItem(g) {
+        RECYCLE_DB[g].push({name:"รายการใหม่", price:0, ef:0}); saveDB(); openSettings();
+    }
+
+    addNewRow();
+</script>
+
+</body>
+</html>
