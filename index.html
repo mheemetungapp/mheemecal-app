@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mheemecal Lite - ระบบคำนวณมืออาชีพ</title>
+    <title>Mheemecal Lite - Porfessional Calculate</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
@@ -17,7 +17,7 @@
         body { font-family: 'Sarabun', sans-serif; background-color: #e8f5e9; padding: 15px; margin: 0; }
         .container { max-width: 600px; margin: auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
         
-        /* ปรับ HEADER และ ICONS */
+        /* HEADER */
         h2 { text-align: center; color: #2e7d32; margin-top: 10px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 22px; }
         .emoji-large { font-size: 20px; } 
         .sub-header { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; font-style: italic; }
@@ -45,20 +45,22 @@
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; color: white; font-weight: bold; transition: 0.2s; }
         .btn-add { background-color: #43a047; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .btn-save { background-color: #1565c0; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .btn-clear { background-color: #ef5350; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); } /* ปุ่มล้างข้อมูล */
         .btn-del { background-color: #e57373; padding: 8px; font-size: 14px; width: 100%; border-radius: 4px; color: white; border: none; cursor: pointer;}
+        .btn-clear-form { background-color: #fbc02d; color: #333; margin-top: 10px; }
+        .btn-row-wrapper { display: flex; gap: 10px; }
+
         .summary-box { background: #c8e6c9; padding: 15px; margin-top: 15px; border-radius: 8px; border: 1px solid #a5d6a7; }
         .grand-total { font-size: 24px; font-weight: bold; color: #1b5e20; text-align: right; margin-top: 5px; }
         .footer-credit { text-align: center; margin-top: 20px; font-size: 12px; color: #b0bec5; font-style: italic; }
 
-        /* SETTINGS & DASHBOARD MODAL */
+        /* OVERLAYS */
         #settings-overlay, #dashboard-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 20000; display: none; justify-content: center; align-items: center; }
         .settings-box, .dashboard-box { background: white; padding: 20px; border-radius: 10px; width: 95%; max-width: 500px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; }
         .settings-header { font-size: 18px; font-weight: bold; color: #2e7d32; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;}
         .close-settings { cursor: pointer; color: #999; font-size: 24px; }
         .settings-content { flex-grow: 1; overflow-y: auto; }
         
-        /* DASHBOARD STYLES */
+        /* DASHBOARD */
         .dash-nav { display: flex; align-items: center; justify-content: space-between; background: #f1f8e9; padding: 8px; border-radius: 8px; margin: 15px 0; border: 1px solid #c5e1a5; }
         .nav-arrow { background: none; border: none; font-size: 18px; cursor: pointer; color: #2e7d32; padding: 5px 10px; font-weight: bold; }
         .nav-arrow:hover { background: #dcedc8; border-radius: 5px; }
@@ -83,6 +85,8 @@
         .toggle-btn { flex: 1; border: none; background: transparent; padding: 6px; border-radius: 18px; cursor: pointer; font-size: 12px; color: #666; font-weight: bold; transition: 0.2s; }
         .toggle-btn.active { background: white; color: #2e7d32; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .btn-export { background: #00897b; color: white; font-size: 14px; padding: 8px; width: 100%; border-radius: 6px; border: none; margin-top: 10px; cursor: pointer; }
+        .btn-dash-del { background: #ffcdd2; color: #c62828; border: none; border-radius: 4px; width: 24px; height: 24px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        .btn-dash-del:hover { background: #e57373; color: white; }
 
         /* SETTINGS ITEMS */
         .cat-section { margin-bottom: 20px; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; background: #fafafa; }
@@ -101,7 +105,12 @@
         .btn-reset { background-color: #607d8b; color: white; width: 100%; padding: 10px; border-radius: 6px; border:none; margin-top:10px; cursor: pointer;}
         .col-header { display: flex; gap: 5px; margin-bottom: 5px; font-size: 10px; color: #666; font-weight: bold; text-align: center; }
         
-        /* RECEIPT, TOAST, LOADING */
+        /* LOADING */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 30000; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 10px;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* RECEIPT */
         #receipt-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: none; justify-content: center; align-items: flex-start; overflow-y: auto; padding-top: 20px; }
         #receipt-paper { width: 500px; background: white; padding: 30px 30px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.5); font-family: 'Sarabun', sans-serif; position: relative; }
         .rc-header { position: relative; text-align: center; border-bottom: 2px solid #2e7d32; padding-bottom: 15px; margin-bottom: 15px; min-height: 70px; }
@@ -119,9 +128,12 @@
         .text-right { text-align: right; }
         .rc-footer { text-align: right; margin-top: 20px; }
         .rc-grand-total { font-size: 28px; font-weight: bold; color: #1b5e20; border-top: 2px solid #1b5e20; display: inline-block; padding-top: 5px; margin-top: 5px;}
+        /* REMOVED: Donation Box CSS was here but since we removed the box structure, the CSS is unused but kept or ignored. 
+           For strict cleanup I will leave the class definitions but they won't render anything as HTML is removed. */
         .rc-donation-box { margin-top: 20px; padding: 12px; background-color: #fff3e0; border: 1px dashed #ff9800; border-radius: 8px; text-align: left; }
         .rc-donation-title { font-weight: bold; color: #e65100; font-size: 16px; margin-bottom: 5px; }
         .rc-donation-score { font-size: 18px; font-weight: bold; color: #e65100; margin-top: 5px; }
+        
         .rc-ghg-box { margin-top: 15px; padding: 10px; background-color: #e8f5e9; border: 1px solid #81c784; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .rc-ghg-left { display: flex; align-items: center; flex: 1; border-right: 2px solid #a5d6a7; padding-right: 5px; justify-content: flex-end; }
         .rc-ghg-icon { font-size: 36px; margin-left: 10px; } 
@@ -143,9 +155,6 @@
         .act-btn-new { background: #fff; color: #2e7d32; }
         .act-btn-close { background: transparent; color: #fff; border: 1px solid #fff; }
 
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 10000; display: none; justify-content: center; align-items: center; flex-direction: column; }
-        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 10px;}
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -183,7 +192,10 @@
         <tbody id="tableBody"></tbody>
     </table>
 
-    <button class="btn btn-add" id="btnAddRow">+ เพิ่มรายการ</button>
+    <div class="btn-row-wrapper">
+        <button class="btn btn-add" id="btnAddRow" style="flex:2;">+ เพิ่มรายการ</button>
+        <button class="btn btn-clear-form" id="btnClearForm" style="flex:1;" onclick="resetForm()">🗑️ ล้างข้อมูล</button>
+    </div>
 
     <div class="summary-box">
         <label style="display:flex; align-items:center; cursor:pointer; margin-bottom: 5px;">
@@ -196,7 +208,6 @@
     </div>
 
     <button class="btn btn-save" id="btnSave">📸 สร้างและโหลดใบเสร็จ</button>
-    <button class="btn btn-clear" onclick="confirmClear()">🗑️ ล้างข้อมูล (เริ่มลูกค้าใหม่)</button>
     <div class="footer-credit">Developed By Mheemetung</div>
 </div>
 
@@ -208,7 +219,7 @@
         </div>
         <div class="settings-content" id="settings-content-area"></div>
         <div style="margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
-             <button class="btn-reset" onclick="resetFactory()">↺ คืนค่าโรงงาน (ล้างข้อมูลที่ตั้งไว้)</button>
+             <button class="btn-reset" onclick="resetFactory()">↺ คืนค่าโรงงาน</button>
              <div style="text-align:center; font-size:12px; color:#888; margin-top:5px;">*ข้อมูลบันทึกอัตโนมัติ (Auto Save)</div>
         </div>
     </div>
@@ -217,7 +228,7 @@
 <div id="dashboard-overlay">
     <div class="dashboard-box">
         <div class="settings-header">
-            <span>📊 สรุปยอด (Offline)</span>
+            <span>📊 สรุปยอด (Summary Dashboard)</span>
             <span class="close-settings" onclick="closeDashboard()">X</span>
         </div>
         <div class="settings-content">
@@ -243,7 +254,7 @@
                     <div class="unit">บาท</div>
                 </div>
                 <div class="dash-card">
-                    <h4>น้ำหนักรวม</h4>
+                    <h4>น้ำหนักรวม (Est.)</h4>
                     <div class="val" id="dash-total-weight">0.00</div>
                     <div class="unit">กก.</div>
                 </div>
@@ -255,7 +266,7 @@
                     <button class="toggle-btn" id="btn-mode-weight" onclick="setChartMode('weight')">⚖️ ดูตามน้ำหนัก</button>
                 </div>
                 
-                <h4 style="margin:5px 0 10px 0; font-size:12px; color:#1b5e20; text-align:center;">สัดส่วนหมวดหมู่ (Top 5)</h4>
+                <h4 style="margin:5px 0 10px 0; font-size:12px; color:#1b5e20; text-align:center;">สัดส่วนขยะรีไซเคิลแต่ละหมวด)</h4>
                 
                 <div class="chart-wrapper">
                     <div id="dash-donut" class="donut-chart">
@@ -263,9 +274,10 @@
                     </div>
                     <div id="dash-legend" class="chart-legend"></div>
                 </div>
+                <div style="text-align:center; font-size:10px; color:#999; margin-top:5px;">*คำนวณน้ำหนักลัง x5 กก.</div>
             </div>
 
-            <div style="font-size:12px; font-weight:bold; margin-bottom:5px;">รายการล่าสุด (5 รายการ)</div>
+            <div style="font-size:12px; font-weight:bold; margin-bottom:5px;">5 รายการล่าสุด</div>
             <table class="item-table" style="font-size:12px;">
                 <tbody id="dash-recent-table"></tbody>
             </table>
@@ -275,7 +287,10 @@
     </div>
 </div>
 
-<div id="loading-overlay"><div class="loader"></div><div>กำลังสร้างรูปภาพ...</div></div>
+<div id="loading-overlay">
+    <div class="loader"></div>
+    <div id="loading-text">กำลังสร้างไฟล์...</div>
+</div>
 
 <div id="next-action-bar">
     <div style="display:flex; align-items:center; gap:5px;">
@@ -296,7 +311,7 @@
                 <div class="rc-logo-container">
                     <span class="rc-emoji">♻️</span><h1 class="rc-logo-text">หมีมีถัง</h1><span class="rc-emoji">♻️</span>
                 </div>
-                <p class="rc-slogan">"คุณไม่ได้ขายขยะ แต่คุณให้โอกาส"</p>
+                <p class="rc-slogan">"เพราะโลกไม่ได้มีใบที่สอง เราจึงต้องช่วยกัน"</p>
                 <div class="rc-contact">📞 089-7923513 &nbsp;|&nbsp; Facebook: หมีมีถัง</div>
             </div>
         </div>
@@ -315,28 +330,38 @@
         
         <div class="rc-ghg-box">
             <div class="rc-ghg-left">
-                <div class="rc-ghg-content"><div class="rc-ghg-title">ลดการปล่อยก๊าซฯ</div><div><span class="rc-ghg-value" id="rc-ghg-total">0.00</span> <span class="rc-ghg-unit">kgCO₂eq</span></div></div>
+                <div class="rc-ghg-content"><div class="rc-ghg-title">ลดการปล่อยก๊าซ</div><div><span class="rc-ghg-value" id="rc-ghg-total">0.00</span> <span class="rc-ghg-unit">kgCO₂eq</span></div></div>
                 <div class="rc-ghg-icon">☁️</div> 
             </div>
             <div class="rc-tree-right">
                 <span class="rc-tree-icon">🌳</span>
-                <div class="rc-tree-text-group"><div class="rc-tree-label">เทียบเท่าปลูกต้นไม้</div><div><span class="rc-tree-value" id="rc-tree-total">0</span> <span style="font-size:16px; color:#1b5e20;">ต้น</span></div></div>
+                <div class="rc-tree-text-group"><div class="rc-tree-label">เท่ากับปลูกต้นไม้</div><div><span class="rc-tree-value" id="rc-tree-total">0</span> <span style="font-size:16px; color:#1b5e20;">ต้น</span></div></div>
             </div>
         </div>
         <div style="text-align:center; font-size:10px; color:#666; margin-top:5px;">*คำนวณจากค่า EF มาตรฐานของ TGO</div>
-        <div style="text-align:center; margin-top:20px; font-size:12px; color:#999;">ขอบคุณที่ร่วมรักษ์โลกและแบ่งปันกับเรา</div>
+        <div style="text-align:center; margin-top:20px; font-size:12px; color:#999;">ขอบคุณที่ร่วมรักษ์โลกและใช้บริการ</div>
     </div>
 </div>
 
 <script>
     /* =========================================
-       CONSTANTS & DB
+       CONSTANTS & CONFIG
        ========================================= */
     const DB_KEY = 'mheemecal_db_v1';
     const AUTOSAVE_KEY = 'mheemecal_autosave_session';
     const HISTORY_KEY = 'mheemecal_history_v1';
-    const CHART_COLORS = ['#4caf50', '#2196f3', '#ff9800', '#9c27b0', '#f44336', '#607d8b']; 
+    
+    // Fixed Color Scheme
+    const CATEGORY_COLORS = {
+        "พลาสติก": "#29b6f6", // Blue
+        "กระดาษ": "#ffa726",  // Orange
+        "แก้ว": "#66bb6a",    // Green
+        "โลหะ": "#bdbdbd",    // Grey
+        "อื่นๆ": "#ab47bc"     // Purple
+    };
+    const DEFAULT_COLOR = "#78909c"; 
 
+    // NOTE: Points data kept in DB for compatibility but logic is removed
     const DEFAULT_DB = {
         "พลาสติก": [
             { name: "ขวด PET ใส", price: 4.0, ef: 1.0310 },
@@ -400,18 +425,19 @@
             { name: "ของถอด", price: 10.0, ef: 0 },
             { name: "แบตเล็ก", price: 11.0, ef: 0 },
             { name: "แบตใหญ่", price: 13.0, ef: 0 }
+
         ]
     };
 
     let RECYCLE_DB = loadDB();
 
+    /* =========================================
+       DATABASE & STORAGE
+       ========================================= */
     function loadDB() {
         const saved = localStorage.getItem(DB_KEY);
-        if (saved) {
-            return JSON.parse(saved);
-        } else {
-            return JSON.parse(JSON.stringify(DEFAULT_DB));
-        }
+        if (saved) return JSON.parse(saved);
+        return JSON.parse(JSON.stringify(DEFAULT_DB));
     }
 
     function saveDB() {
@@ -426,7 +452,7 @@
     }
 
     /* =========================================
-       SESSION MANAGEMENT (FIXED DATE)
+       SESSION MANAGEMENT
        ========================================= */
     function saveSession() {
         const rows = [];
@@ -451,13 +477,9 @@
 
     function restoreSession() {
         const savedData = localStorage.getItem(AUTOSAVE_KEY);
-        
         if (!savedData) return;
         try {
             const data = JSON.parse(savedData);
-            // NOTE: We do NOT restore date here to ensure it's always today on reload
-            // if (data.date) document.getElementById('billDate').value = data.date; 
-            
             if (data.customer) document.getElementById('customerName').value = data.customer;
             if (data.vat !== undefined) document.getElementById('vatCheck').checked = data.vat;
             const tbody = document.getElementById('tableBody');
@@ -495,15 +517,19 @@
         localStorage.removeItem(AUTOSAVE_KEY);
         location.reload();
     }
-    
-    function confirmClear() {
-        if(confirm("คุณแน่ใจหรือไม่ที่จะล้างข้อมูลทั้งหมดเพื่อเริ่มลูกค้าใหม่?")) {
-            clearAndReload();
+
+    function resetForm() {
+        if(confirm("ต้องการล้างรายการทั้งหมดในหน้าจอนี้ใช่หรือไม่?")) {
+            localStorage.removeItem(AUTOSAVE_KEY);
+            document.getElementById('tableBody').innerHTML = '';
+            document.getElementById('customerName').value = '';
+            document.getElementById('showTotal').innerText = '0.00';
+            addNewRow(); 
         }
     }
 
     /* =========================================
-       APP LOGIC
+       MAIN APP LOGIC
        ========================================= */
     function addNewRow() {
         const tbody = document.getElementById('tableBody');
@@ -581,9 +607,10 @@
     }
 
     /* =========================================
-       IMAGE GENERATION & SAVING
+       IMAGE GENERATION
        ========================================= */
     function generateImage() {
+        document.getElementById('loading-text').innerText = "กำลังสร้างรูปภาพ...";
         document.getElementById('loading-overlay').style.display = 'flex';
         
         const dateInput = document.getElementById('billDate').value;
@@ -626,7 +653,7 @@
                 const newTr = document.createElement('tr');
                 newTr.innerHTML = `<td>${itemName}</td><td class="text-right">${qty.toLocaleString()}</td><td class="text-right">${price.toLocaleString()}</td><td class="text-right">${lineTotal.toLocaleString(undefined, {minimumFractionDigits:2})}</td>`;
                 rcBody.appendChild(newTr);
-                historyItems.push({ group: groupName, name: itemName, qty: qty, price: price, total: lineTotal });
+                historyItems.push({ group: groupName, name: itemName, qty: qty, price: price, total: lineTotal, isCrate: isCrate });
             }
         });
 
@@ -639,6 +666,8 @@
         if(hasVat) document.getElementById('rc-vat').innerText = vatVal.toLocaleString('th-TH', {minimumFractionDigits:2});
         document.getElementById('rc-total').innerText = grandTotal.toLocaleString('th-TH', {minimumFractionDigits:2});
         
+        // Removed Points/Donation calculation updates here
+
         document.getElementById('rc-ghg-total').innerText = totalGHG.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         const treesPlanted = Math.round(totalGHG / 9.5);
         document.getElementById('rc-tree-total').innerText = treesPlanted.toLocaleString('th-TH');
@@ -682,9 +711,16 @@
     function showActionBar() { document.getElementById('next-action-bar').classList.add('show'); }
     function hideActionBar() { document.getElementById('next-action-bar').classList.remove('show'); }
     function closeOverlay() { document.getElementById('receipt-overlay').style.display = 'none'; }
+    function tryLoadImage(img) {
+        const currentSrc = img.src;
+        if (currentSrc.endsWith('logo.jpg')) img.src = 'logo.JPG';
+        else if (currentSrc.endsWith('logo.JPG')) img.src = 'logo.jpeg';
+        else if (currentSrc.endsWith('logo.jpeg')) img.src = 'logo.png';
+        else img.style.display = 'none';
+    }
 
     /* =========================================
-       SETTINGS
+       SETTINGS LOGIC
        ========================================= */
     function openSettings() { renderEditList(); document.getElementById('settings-overlay').style.display = 'flex'; }
     function closeSettings() { document.getElementById('settings-overlay').style.display = 'none'; }
@@ -696,10 +732,12 @@
             const catDiv = document.createElement('div');
             catDiv.className = 'cat-section';
             let html = `<div class="cat-title">${cat}</div>`;
+            // Removed Point Column from Header
             html += `<div class="col-header"><div style="width:24px;"></div><div style="flex:2;">ชื่อรายการ</div><div style="flex:1;">ราคา</div><div style="flex:1;">EF</div><div style="width:30px;">ลบ</div></div>`;
             RECYCLE_DB[cat].forEach((item, idx) => {
                 const isFirst = idx === 0;
                 const isLast = idx === RECYCLE_DB[cat].length - 1;
+                // Removed Point Input from Rows
                 html += `
                     <div class="edit-row">
                         <div class="sort-controls">
@@ -734,7 +772,7 @@
     }
 
     function addItem(cat) {
-        RECYCLE_DB[cat].push({ name: "รายการใหม่", price: 0, ef: 0 });
+        RECYCLE_DB[cat].push({ name: "รายการใหม่", price: 0, ef: 0, point: 0 });
         saveDB();
         renderEditList();
     }
@@ -754,7 +792,7 @@
        ========================================= */
     let currentDashMode = 'today';
     let currentChartMode = 'price'; 
-    let selectedDate = new Date(); 
+    let selectedDate = new Date();
 
     function openDashboard() {
         selectedDate = new Date(); 
@@ -795,6 +833,26 @@
         renderDashboard();
     }
 
+    function deleteHistoryItem(timestamp) {
+        if(confirm("ต้องการลบรายการนี้ออกจากประวัติอย่างถาวรใช่หรือไม่?")) {
+            let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+            history = history.filter(item => item.timestamp !== timestamp);
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            renderDashboard(); 
+        }
+    }
+
+    // HELPER: Check if an item is a crate (based on DB or saved flag)
+    function checkIsCrate(group, name, savedFlag) {
+        if(savedFlag) return true;
+        // Fallback: Check in current DB
+        if(RECYCLE_DB[group]) {
+            const found = RECYCLE_DB[group].find(i => i.name === name);
+            if(found && found.isCrate) return true;
+        }
+        return false;
+    }
+
     function renderDashboard() {
         const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
         let filtered = [];
@@ -808,57 +866,68 @@
         if (currentDashMode === 'today') {
             lbl.style.display = 'none';
             picker.style.display = 'inline-block';
-            
             const yyyy = selectedDate.getFullYear();
             const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
             const dd = String(selectedDate.getDate()).padStart(2, '0');
             picker.value = `${yyyy}-${mm}-${dd}`;
-            
             filtered = history.filter(h => {
                 const d = new Date(h.timestamp);
                 return d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth() && d.getFullYear() === selectedDate.getFullYear();
             });
-
         } else if (currentDashMode === 'month') {
             picker.style.display = 'none';
             lbl.style.display = 'inline-block';
             lbl.innerText = selectedDate.toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
-            
             filtered = history.filter(h => {
                 const d = new Date(h.timestamp);
                 return d.getMonth() === selectedDate.getMonth() && d.getFullYear() === selectedDate.getFullYear();
             });
-
         } else if (currentDashMode === 'year') {
             picker.style.display = 'none';
             lbl.style.display = 'inline-block';
             lbl.innerText = "ปี " + (selectedDate.getFullYear() + 543);
-            
             filtered = history.filter(h => {
                 const d = new Date(h.timestamp);
                 return d.getFullYear() === selectedDate.getFullYear();
             });
         }
 
-        const totalMoney = filtered.reduce((acc, cur) => acc + cur.totalMoney, 0);
-        const totalWeight = filtered.reduce((acc, cur) => acc + (cur.totalWeight || 0), 0);
+        // Calculate Total Money and Total Estimated Weight
+        let totalMoney = 0;
+        let totalEstWeight = 0;
+
+        filtered.forEach(h => {
+            totalMoney += h.totalMoney;
+            if(h.items) {
+                h.items.forEach(i => {
+                    const isCrate = checkIsCrate(i.group, i.name, i.isCrate);
+                    const weight = isCrate ? (i.qty * 5) : i.qty;
+                    totalEstWeight += weight;
+                });
+            }
+        });
+
         document.getElementById('dash-total-money').innerText = totalMoney.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2});
-        document.getElementById('dash-total-weight').innerText = totalWeight.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2});
+        document.getElementById('dash-total-weight').innerText = totalEstWeight.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2});
 
         renderDonutChart(filtered);
 
         const recentTable = document.getElementById('dash-recent-table');
         recentTable.innerHTML = "";
+        
         let recentList = filtered.slice().sort((a,b) => b.timestamp - a.timestamp).slice(0, 5); 
         if(recentList.length === 0) {
-            recentTable.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#999;">ไม่มีรายการในช่วยเวลานี้</td></tr>`;
+            recentTable.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">ไม่มีรายการในช่วยเวลานี้</td></tr>`;
         } else {
             recentList.forEach(r => {
                  recentTable.innerHTML += `
                     <tr style="border-bottom:1px solid #eee;">
-                        <td style="color:#666;">${new Date(r.timestamp).toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}</td>
-                        <td>${r.customer}</td>
-                        <td style="text-align:right; font-weight:bold;">${r.totalMoney.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                        <td style="color:#666; width:20%;">${new Date(r.timestamp).toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}</td>
+                        <td style="width:40%;">${r.customer}</td>
+                        <td style="text-align:right; font-weight:bold; width:30%;">${r.totalMoney.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                        <td style="width:10%; text-align:center;">
+                            <button class="btn-dash-del" onclick="deleteHistoryItem(${r.timestamp})">X</button>
+                        </td>
                     </tr>
                  `;
             });
@@ -868,10 +937,18 @@
     function renderDonutChart(data) {
         let catMap = {};
         let grandTotal = 0;
+
         data.forEach(h => {
             if(h.items) {
                 h.items.forEach(i => {
-                    let val = (currentChartMode === 'price') ? i.total : i.qty;
+                    let val = 0;
+                    if (currentChartMode === 'price') {
+                        val = i.total;
+                    } else {
+                        // Weight Mode: Multiply by 5 if it's a crate
+                        const isCrate = checkIsCrate(i.group, i.name, i.isCrate);
+                        val = isCrate ? (i.qty * 5) : i.qty;
+                    }
                     catMap[i.group] = (catMap[i.group] || 0) + val;
                     grandTotal += val;
                 });
@@ -892,17 +969,18 @@
 
         let gradientStr = "conic-gradient(";
         let currentPercent = 0;
-        sortedCats.forEach((c, index) => {
+        sortedCats.forEach((c) => {
             let percent = (c.val / grandTotal) * 100;
             let nextPercent = currentPercent + percent;
-            let color = CHART_COLORS[index % CHART_COLORS.length];
+            let color = CATEGORY_COLORS[c.key] || DEFAULT_COLOR;
+            
             gradientStr += `${color} ${currentPercent}% ${nextPercent}%, `;
             currentPercent = nextPercent;
             legend.innerHTML += `
                 <div class="legend-item">
                     <div style="display:flex; align-items:center;">
                         <span class="legend-color" style="background:${color}"></span>
-                        <span>${c.key}</span>
+                        <span>${c.key} (${percent.toFixed(1)}%)</span>
                     </div>
                     <strong>${c.val.toLocaleString('en-US', {maximumFractionDigits:0})}</strong>
                 </div>
@@ -914,41 +992,85 @@
     }
 
     function exportCSV() {
-        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-        if(history.length === 0) { alert("ไม่มีข้อมูล"); return; }
+        // 1. Force Show Loader
+        const loader = document.getElementById('loading-overlay');
+        const loadText = document.getElementById('loading-text');
         
-        let csvContent = "Date,Time,Customer,Category,Item,Quantity,Price,Total\r\n";
-        history.forEach(h => {
-            const dt = new Date(h.timestamp);
-            const dateStr = dt.toLocaleDateString('th-TH');
-            const timeStr = dt.toLocaleTimeString('th-TH');
-            if(h.items) {
-                h.items.forEach(i => {
-                    let row = [dateStr, timeStr, `"${h.customer}"`, i.group, i.name, i.qty, i.price, i.total].join(",");
-                    csvContent += row + "\r\n";
+        loadText.innerText = "กำลังเตรียมไฟล์ Excel...";
+        loader.style.display = 'flex';
+        
+        // 2. Use double setTimeout to force DOM repaint
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    executeExport();
+                    // 3. Hide Loader inside executeExport or after it finishes
+                    loader.style.display = 'none';
+                }, 500); // 500ms delay to make sure user sees the spinner
+            });
+        }, 50);
+    }
+
+    function executeExport() {
+        try {
+            const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+            let filtered = [];
+
+            if (currentDashMode === 'today') {
+                filtered = history.filter(h => {
+                    const d = new Date(h.timestamp);
+                    return d.getDate() === selectedDate.getDate() &&
+                           d.getMonth() === selectedDate.getMonth() &&
+                           d.getFullYear() === selectedDate.getFullYear();
+                });
+            } else if (currentDashMode === 'month') {
+                filtered = history.filter(h => {
+                    const d = new Date(h.timestamp);
+                    return d.getMonth() === selectedDate.getMonth() &&
+                           d.getFullYear() === selectedDate.getFullYear();
+                });
+            } else if (currentDashMode === 'year') {
+                filtered = history.filter(h => {
+                    const d = new Date(h.timestamp);
+                    return d.getFullYear() === selectedDate.getFullYear();
                 });
             }
-        });
 
-        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", `mheemecal_export_${new Date().getTime()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+            if(filtered.length === 0) { 
+                alert("ไม่มีข้อมูลสำหรับช่วงเวลานี้"); 
+                return; 
+            }
+            
+            let csvContent = "Date,Time,Customer,Category,Item,Quantity,Price,Total\r\n";
+            filtered.forEach(h => {
+                const dt = new Date(h.timestamp);
+                const dateStr = dt.toLocaleDateString('th-TH');
+                const timeStr = dt.toLocaleTimeString('th-TH');
+                if(h.items) {
+                    h.items.forEach(i => {
+                        let row = [dateStr, timeStr, `"${h.customer}"`, i.group, i.name, i.qty, i.price, i.total].join(",");
+                        csvContent += row + "\r\n";
+                    });
+                }
+            });
+
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `mheemecal_export_${currentDashMode}_${new Date().getTime()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+        } catch (e) {
+            alert("เกิดข้อผิดพลาด: " + e);
+        }
     }
 
-    function tryLoadImage(img) {
-        const currentSrc = img.src;
-        if (currentSrc.endsWith('logo.jpg')) img.src = 'logo.JPG';
-        else if (currentSrc.endsWith('logo.JPG')) img.src = 'logo.jpeg';
-        else if (currentSrc.endsWith('logo.jpeg')) img.src = 'logo.png';
-        else img.style.display = 'none';
-    }
-
-    // EVENT LISTENERS
+    /* =========================================
+       INITIALIZATION & EVENTS
+       ========================================= */
     document.getElementById('btnAddRow').addEventListener('click', addNewRow);
     document.getElementById('vatCheck').addEventListener('change', reCalculate);
     document.getElementById('btnSave').addEventListener('click', generateImage);
@@ -960,7 +1082,7 @@
         const savedData = localStorage.getItem(AUTOSAVE_KEY);
         if(savedData) restoreSession(); else addNewRow();
         
-        // FORCE SET DATE TO TODAY (Overrides saved session date)
+        // FORCE SET DATE TO TODAY
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
