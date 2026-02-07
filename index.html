@@ -920,10 +920,24 @@
             recentTable.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">ไม่มีรายการในช่วยเวลานี้</td></tr>`;
         } else {
             recentList.forEach(r => {
+                 const d = new Date(r.timestamp);
+                 let timeStr = "";
+                 
+                 // LOGIC CHANGED HERE: Show Date if not Today mode
+                 if(currentDashMode === 'today') {
+                     timeStr = d.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+                 } else {
+                     // For Month/Year view: Show "DD/MM HH:mm"
+                     const dd = String(d.getDate()).padStart(2, '0');
+                     const mm = String(d.getMonth() + 1).padStart(2, '0');
+                     const tt = d.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+                     timeStr = `${dd}/${mm} ${tt}`;
+                 }
+
                  recentTable.innerHTML += `
                     <tr style="border-bottom:1px solid #eee;">
-                        <td style="color:#666; width:20%;">${new Date(r.timestamp).toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}</td>
-                        <td style="width:40%;">${r.customer}</td>
+                        <td style="color:#666; width:25%; font-size:11px;">${timeStr}</td>
+                        <td style="width:35%;">${r.customer}</td>
                         <td style="text-align:right; font-weight:bold; width:30%;">${r.totalMoney.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
                         <td style="width:10%; text-align:center;">
                             <button class="btn-dash-del" onclick="deleteHistoryItem(${r.timestamp})">X</button>
